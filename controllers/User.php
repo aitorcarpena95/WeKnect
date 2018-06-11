@@ -37,16 +37,16 @@ class User extends CI_Controller {
 			return;
 		}
 		
-		// create the data object
+		// crear objetos data
 		$data = new stdClass();
 		
-		// load the forum model
+		// cargar el modelo foro
 		$this->load->model('forum_model');
 		
-		// get user id from username
+		// coger el id del usuario de el nombre de usuario
 		$user_id = $this->user_model->get_user_id_from_username($username);
 		
-		// create the user object
+		// crear el objeto user
 		$user               = $this->user_model->get_user($user_id);
 		$user->count_topics = $this->user_model->count_user_topics($user_id);
 		$user->count_posts  = $this->user_model->count_user_posts($user_id);
@@ -68,23 +68,23 @@ class User extends CI_Controller {
 			$user->latest_topic->title = $user->username . ' Aún no ha posteado nada';
 		}
 		
-		// create breadcrumb
+		// crear breadcrumb
 		$breadcrumb  = '<ol class="breadcrumb">';
 		$breadcrumb .= '<li><a href="' . base_url() . '">Home</a></li>';
 		$breadcrumb .= '<li class="active">' . $username . '</li>';
 		$breadcrumb .= '</ol>';
 		
-		// create a button to permit profile edition
+		// crear un boton para permitir la edición del perfil
 		$edit_button = '<a href="' . base_url('index.php/user/' . $user->username . '/edit') . '" class="btn btn-xs btn-success">Edita tu perfil</a>';
 		
-		// assign created objects to the data object
+		// asignar los objetos creados a los objetos data
 		$data->user       = $user;
 		$data->breadcrumb = $breadcrumb;
 		if (isset($_SESSION['username']) && $_SESSION['username'] === $username) {
-			// user is on his own profile
+			// el usuario está en su propio perfil
 			$data->edit_button = $edit_button;
 		} else {
-			// user is not on his own profile
+			// el usuario no está en su propio perfil
 			$data->edit_button = null;
 		}
 		
@@ -102,14 +102,14 @@ class User extends CI_Controller {
 	 */
 	public function register() {
 		
-		// create the data object
+		// crear los objetos data
 		$data = new stdClass();
 		
-		// load form helper and validation library
+		// cargar el helper y la libreria de validación
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		
-		// set validation rules
+		// especificar las reglas
 		$this->form_validation->set_rules('username', 'Username', 'trim|required|alpha_numeric|min_length[4]|max_length[20]|is_unique[users.username]', array('is_unique' => 'Este nombre de usuario ya existe, porfavor elija otro.'));
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[users.email]');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
@@ -117,31 +117,31 @@ class User extends CI_Controller {
 		
 		if ($this->form_validation->run() === false) {
 			
-			// validation not ok, send validation errors to the view
+			// validación no ok, envia erorres de la validación a la vista
 			$this->load->view('header');
 			$this->load->view('user/register/register', $data);
 			$this->load->view('footer');
 			
 		} else {
 			
-			// set variables from the form
+			// especificar variables del formulario
 			$username = $this->input->post('username');
 			$email    = $this->input->post('email');
 			$password = $this->input->post('password');
 			
 			if ($this->user_model->create_user($username, $email, $password)) {
 				
-				// user creation ok
+				// creación de usuario ok
 				$this->load->view('header');
 				$this->load->view('user/register/register_success', $data);
 				$this->load->view('footer');
 				
 			} else {
 				
-				// user creation failed, this should never happen
+				// fallo al crear usuario
 				$data->error = 'Hubo un problema al crear su cuenta, porfavor intentelo de nuevo.';
 				
-				// send error to the view
+				// enviar error a la vista
 				$this->load->view('header');
 				$this->load->view('user/register/register', $data);
 				$this->load->view('footer');
@@ -160,27 +160,27 @@ class User extends CI_Controller {
 	 */
 	public function login() {
 		
-		// create the data object
+		// crear el objeto data
 		$data = new stdClass();
 		
-		// load form helper and validation library
+		// cargar el helper y la libreria de validación
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		
-		// set validation rules
+		// especificar reglas
 		$this->form_validation->set_rules('username', 'Username', 'required|alpha_numeric');
 		$this->form_validation->set_rules('password', 'Password', 'required');
 		
 		if ($this->form_validation->run() == false) {
 			
-			// validation not ok, send validation errors to the view
+			// validación no ok, enviar errores de la validación a la vista
 			$this->load->view('header');
 			$this->load->view('user/login/login');
 			$this->load->view('footer');
 			
 		} else {
 			
-			// set variables from the form
+			// especificar las variables del formulario
 			$username = $this->input->post('username');
 			$password = $this->input->post('password');
 			
@@ -189,7 +189,7 @@ class User extends CI_Controller {
 				$user_id = $this->user_model->get_user_id_from_username($username);
 				$user    = $this->user_model->get_user($user_id);
 				
-				// set session user datas
+				// especificar la data de la sesión de usuario
 				$_SESSION['user_id']      = (int)$user->id;
 				$_SESSION['username']     = (string)$user->username;
 				$_SESSION['logged_in']    = (bool)true;
@@ -203,10 +203,10 @@ class User extends CI_Controller {
 				
 			} else {
 				
-				// login failed
+				// login fallido
 				$data->error = 'Wrong username or password.';
 				
-				// send error to the view
+				// enviar errores a la vista
 				$this->load->view('header');
 				$this->load->view('user/login/login', $data);
 				$this->load->view('footer');
@@ -220,12 +220,12 @@ class User extends CI_Controller {
 
 	public function logout() {
 		
-		// create the data object
+		// crear objetp data
 		$data = new stdClass();
 		
 		if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
 			
-			// remove session datas
+			// eliminar datos de sesión
 			foreach ($_SESSION as $key => $value) {
 				unset($_SESSION[$key]);
 			}
@@ -254,15 +254,15 @@ class User extends CI_Controller {
 	 */
 	public function email_validation($username, $hash) {
 		
-		// create the data object
+		// crear objetos data
 		$data = new stdClass();
 		
-		// avoid blank at the end of the url
+		// evitar espacio en blanco al final de la url
 		$hash = trim($hash);
 		
 		if ($this->user_model->confirm_account($username, $hash)) {
 			
-			// account validation ok
+			// validacion cuenta ok
 			$data->success = 'Enhorabuena, su correo ha sido validado y su cuenta está activa! Porfavor <a href="https://knect.asir6.enganxat.net/index.php/login">logueate</a>.';
 			$this->load->view('header');
 			$this->load->view('user/register/confirmation', $data);
@@ -270,7 +270,7 @@ class User extends CI_Controller {
 			
 		} else {
 			
-			// account validation failed
+			// validation cuenta fallida 
 			$data->error = 'Wops! Su cuenta no ha podido ser validada debido a un error inesperado. Porfavor contacta con un administrador.';
 			$this->load->view('header');
 			$this->load->view('user/register/confirmation', $data);
@@ -290,16 +290,16 @@ class User extends CI_Controller {
       
 	public function edit($username = false) {
 		
-		// a user cann only edit his own profile
+		// un usuario solo puede editar su propio perfil
 		if ($username === false || $username !== $_SESSION['username']) {
 			redirect(base_url());
 			return;
 		}
 		
-		// create the data object
+		// crear objeto data
 		$data = new stdClass();
 		
-		// load form helper and form validation library
+		// cargar helper y libreria de validación
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		
@@ -311,24 +311,24 @@ class User extends CI_Controller {
 		$this->form_validation->set_rules('password', 'New Password', 'trim|min_length[6]|matches[password_confirm]');
 		$this->form_validation->set_rules('password_confirm', 'Password Confirmation', 'trim|min_length[6]');
 		
-		// get the user object
+		// especificar el objeto user
 		$user_id = $this->user_model->get_user_id_from_username($username);
 		$user    = $this->user_model->get_user($user_id);
 		
-		// create breadcrumb
+		// crear breadcrumb
 		$breadcrumb  = '<ol class="breadcrumb">';
 		$breadcrumb .= '<li><a href="' . base_url() . '">Home</a></li>';
 		$breadcrumb .= '<li><a href="' . base_url('index.php/user/' . $username) . '">' . $username . '</a></li>';
 		$breadcrumb .= '<li class="active">Edit</li>';
 		$breadcrumb .= '</ol>';
 		
-		// assign objects to the data object
+		// asignar objetos al objeto data
 		$data->user       = $user;
 		$data->breadcrumb = $breadcrumb;
 		
 		if ($this->form_validation->run() === false) {
 			
-			// validation not ok, send validation errors to the view
+			// validacion no ok, enviar errores de validacion a la vista
 			$this->load->view('header');
 			$this->load->view('user/profile/edit', $data);
 			$this->load->view('footer');
@@ -348,10 +348,10 @@ class User extends CI_Controller {
 				$update_data['password'] = $this->input->post('password');
 			}
 			
-			// avatar upload
+			// subir avatar
 			if (isset($_FILES['userfile']['name']) && !empty($_FILES['userfile']['name'])) {
 				
-				// setup upload configuration and load upload library
+				// configuracion paras subir img y cargar libreria upload
 				$config['upload_path']      = './uploads/avatars/';
 				$config['allowed_types']    = 'gif|jpg|png';
 				$config['max_size']         = 2048;
@@ -363,47 +363,47 @@ class User extends CI_Controller {
 				
 				if (!$this->upload->do_upload()) {
 					
-					// upload NOT ok
+					// upload NO ok
 					$error = array('error' => $this->upload->display_errors());
 					$this->load->view('upload_form', $error);
 				
 				} else {
 					
-					// Upload ok send name to $updated_data
+					// Upload ok enviame nombre a $updated_data
 					$update_data['avatar'] = $this->upload->data('file_name');
 					
 				}
 				
 			}
 			
-			// if everything is ok
+			// si todo ok
 			if ($this->user_model->update_user($user_id, $update_data)) {
 				
-				// if username change, update session
+				// si nombre usuario cambia, actualizar sesión
 				if(isset($update_data['username'])) {
 					$_SESSION['username'] = $update_data['username'];
 					if ($this->input->post('username') != '') {
-						// a little hook to send success message the new profil edit url if the username was updated
+						// un pequeño hook para enviar el mensaje de success a la nueva url del perfil si el nombre de usuario ha sido actualizado
 						$_SESSION['flash']    = 'Tu perfil ha sido actualizado con exito!';
 					}
 				}
 				
-				// fix the fact that a new avatar was not shown until page refresh
+				// solucionar el hecho de que no se muestre el nuevo avatar hasta que se actualize la página
 				if(isset($update_data['avatar'])) {
 					$data->user->avatar = $update_data['avatar'];
 				}
 				
 				if ($this->input->post('username') != '') {
 					
-					// redirect to the new profile edit url
+					// redirigir a la nueva url del perfil
 					redirect(base_url('index.php/user/' . $update_data['username'] . '/edit'));
 					
 				} else {
 					
-					// create a success message
+					// crear mensaje de success
 					$data->success = 'Tu perfil ha sido actualizado con exito!';
 					
-					// send success message to the views
+					// enviar mensaje a la vista
 					$this->load->view('header');
 					$this->load->view('user/profile/edit', $data);
 					$this->load->view('footer');
@@ -412,10 +412,10 @@ class User extends CI_Controller {
 				
 			} else {
 				
-				// update user not ok : this should never happen
+				// fallo al actualizar el usuario
 				$data->error = 'Wops! Hubo un problema actualizando tu perfil. Porfavor, vuelva a intentarlo.';
 				
-				//send errors to the views
+				// enviar errores a la vista
 				$this->load->view('header');
 				$this->load->view('user/profile/edit', $data);
 				$this->load->view('footer');
@@ -435,18 +435,18 @@ class User extends CI_Controller {
 	 */
 	public function delete($username = false) {
 		
-		// a user cann only delete his own profile and must be logged in
+		// solo el propio usuario puede borrar su perfil y debe de estar logueado
 		if ($username == false || !isset($_SESSION['username']) || $username !== $_SESSION['username']) {
 			redirect(base_url());
 			return;
 		}
 		
-		// create the data object
+		// crear objeto data
 		$data = new stdClass();
 		
 		if ($_SESSION['username'] === $username) {
 			
-			// create breadcrumb
+			// crear breadcrumb
 			$breadcrumb  = '<ol class="breadcrumb">';
 			$breadcrumb .= '<li><a href="' . base_url() . '">Home</a></li>';
 			$breadcrumb .= '<li><a href="' . base_url('index.php/user/' . $username) . '">' . $username . '</a></li>';
@@ -461,17 +461,17 @@ class User extends CI_Controller {
 				
 				$data->success = 'Tu cuenta ha sido borrada con éxito. Bye bye :(';
 				
-				// user delete ok, load views
+				// borrado de usuario ok, cargar vistas
 				$this->load->view('header');
 				$this->load->view('user/profile/delete', $data);
 				$this->load->view('footer');
 				
 			} else {
 				
-				// user delete not ok, this should never happen
+				// borrado de usuario no ok
 				$data->error = 'Ha surgido un problema al borrar tu cuenta. Porfavor contacta con un administrador.';
 				
-				// send errors to the views
+				// enviar errores a la vista
 				$this->load->view('header');
 				$this->load->view('user/profile/edit', $data);
 				$this->load->view('footer');
@@ -480,7 +480,7 @@ class User extends CI_Controller {
 			
 		} else {
 			
-			// a user cann only delete his own profile and must be logged in
+			// solo el propio usuario puede borrar su cuenta y debe estar logueado
 			redirect(base_url());
 			return;
 			
