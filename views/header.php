@@ -10,59 +10,7 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<meta name="author" content="">
-        <script>
-        
-         consoleText(['Hello World.', 'Console Text', 'Made with Love.'], 'text',['tomato','rebeccapurple','lightblue']);
-
-function consoleText(words, id, colors) {
-  if (colors === undefined) colors = ['#fff'];
-  var visible = true;
-  var con = document.getElementById('console');
-  var letterCount = 1;
-  var x = 1;
-  var waiting = false;
-  var target = document.getElementById(id);
-  target.setAttribute('style', 'color:' + colors[0]);
-  window.setInterval(function() {
-
-    if (letterCount === 0 && waiting === false) {
-      waiting = true;
-      target.innerHTML = words[0].substring(0, letterCount);
-      window.setTimeout(function() {
-        var usedColor = colors.shift();
-        colors.push(usedColor);
-        var usedWord = words.shift();
-        words.push(usedWord);
-        x = 1;
-        target.setAttribute('style', 'color:' + colors[0]);
-        letterCount += x;
-        waiting = false;
-      }, 1000);
-    } else if (letterCount === words[0].length + 1 && waiting === false) {
-      waiting = true;
-      window.setTimeout(function() {
-        x = -1;
-        letterCount += x;
-        waiting = false;
-      }, 1000);
-    } else if (waiting === false) {
-      target.innerHTML = words[0].substring(0, letterCount);
-      letterCount += x;
-    }
-  }, 120);
-  window.setInterval(function() {
-    if (visible === true) {
-      con.className = 'console-underscore hidden';
-      visible = false;
-
-    } else {
-      con.className = 'console-underscore';
-
-      visible = true;
-    }
-  }, 400);
-}
-        </script>
+ 
 	<!-- css -->
 	<link href="<?= base_url('assets/css/bootstrap.min.css') ?>" rel="stylesheet">
 	<link href="<?= base_url('assets/css/style.css') ?>" rel="stylesheet">
@@ -271,15 +219,6 @@ function consoleText(words, id, colors) {
    
  <img class="logo1" src="http://www.solidrockassembly.ca/wp-content/uploads/2018/02/Connect-Logo-top1.png">
 
- 
- 
- <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-
-
- 
- 
- 
- 
  <ul class="menu cf">
   <li><a href="<?= base_url() ?>">Home</a></li>
   <li>
